@@ -1,0 +1,856 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>2023 FRC Match Scouting</title>
+
+    <link rel="shortcut icon" href="images/icon.png">
+    <link rel="icon" href="images/icon.png">
+    <link rel="apple-touch-icon" href="images/icon.png">
+
+    <!-- Set Up Jquery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+
+    <!-- Set Up Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+
+    <!-- Set Up Font Awesome and Google Fonts-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Black+Ops+One" rel="stylesheet">
+
+</head>
+
+<body style="background-color: aliceblue">
+    <div id="header"></div>
+    <div id="content" class="container">
+
+        <!--DO NOT CHANGE THE CODE BELOW THIS-->
+        <div>
+            <div class="text-center mt-5">
+                <h3 id="current-event">Currently Scouting for Event: </h3>
+            </div>
+            <div class=" mt-5 row justify-content-around">
+                <div class=" pb-3 width-50">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="mr-3 mt-2">Match</label>
+                            <select class="custom-select" id="match-choices">
+                                <option disabled selected value> -- select an option -- </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class=" pb-3 width-50">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="mr-3 mt-2">Team</label>
+                            <select class="custom-select" id="team-choices">
+                                <option disabled selected value> -- select an option -- </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--DO NOT CHANGE THE CODE ABOVE THIS-->
+
+        <!--
+            NOTE: The code in Main.js will hide the html in this below div by default.
+            When creating this page, it may be easiest to comment out
+            the line in Main.js that hides this. 
+            REMEMBER TO UNCOMMENT IT WHEN DONE TESTING
+        -->
+        <div id="main">
+            <!-- 
+                Some notes for creating the inputs for this page. 
+
+                1. Follow the Instructions for setting up the back-end index.js first!
+
+                2. To make this page look nice, it is recommended that you have some knowledge
+                    in using bootstrap, especially its row and column features and 
+                    its ability to make a card. Info on how to use Bootstrap can be found through
+                    their documenatation: https://getbootstrap.com/docs/4.0/getting-started/introduction/
+                    by going to the "Components" tab. Try making a seperate html document
+                    and playing with bootstrap until you feel comfortable
+
+                3. For each location you want to retrieve an input from, the tag
+                must have the class "data" as one of its classes and it must
+                have an ID which matches the storage path on the empty match data 
+                object created in the back-end index.js, with "-" seperating 
+                each key. It should look like this: "gameperiod-task".
+                So for example, if your match data object looks like this:
+                gameplay:{
+                    auto: {
+                        "line": 0,
+                        ...
+                    },
+                    teleop: {
+                        "jumps": 0,
+                        ...
+                    }, 
+                    ...
+                }
+                Then the ID for whatever input you are using for keeping track of the 
+                line crossing in auto has to be "auto-line" and the ID for whatever you are 
+                using for keeping track of the jumps in teleop has to be "teleop-jumps".
+
+                4. The code in main.js is capable of retrieving and reseting data from checkboxes 
+                and incrementation/decrementation choices by default. If you need to create 
+                a different form of input, follow the instructions of main.js to retrieve and reset 
+                the values, and MAKE SURE to include the class and ID described in Note 2 above
+                for your new input
+
+                5. Sample HTML:
+
+                    For a checkbox - Note how the input tag has a class of "data" 
+                                    and its ID is the general case as an example. 
+                                    Also, that the label has a "for" attribute which MUST match 
+                                    the ID of the input:
+                        <div class = "card">
+                            <div class="card-body">
+                                    <div class="form-check">
+                                        
+                                        <input class="form-check-input data" type="checkbox" id = "gameperiod-task">
+
+                                        <label class="form-check-label" for="gameperiod-task">
+                                            Task 
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    For an incrementation/decrementation box - Note how the tag where we plan to retrieve 
+                                                               the data has a class of "data" and its ID is the general case
+                                                                as an example.
+
+                                                                Also, the + and - buttons have a "for" attribute which MUST 
+                                                                correspond to the ID of the tag where we retrive data and
+                                                                the + and - button MUST have the class "change-btn" as well
+                                                                as either the class "decrement" or "increment" respectively. These
+                                                                attributes and classes are used in the code within main.js for changing
+                                                                the value of the tag where we retrieve data. 
+
+                        <div class=" d-flex justify-content-center mt-2">
+                            <div class="input-group mt-3 w-75">
+
+                                <div class="input-group-prepend">
+                                    <button for="gameperiod-task" class="btn btn-outline-secondary change-btn decrement" type="button">-</button>
+                                </div>
+
+                                <div id="gameperiod-task" class="form-control data">
+                                    0
+                                </div>
+
+                                <div class="input-group-append">
+                                    <button for="gameperiod-task" class="btn btn-outline-secondary change-btn increment" type="button">+</button>
+                                </div>
+
+                            </div>
+                        </div>
+            -->
+
+            <div class="mt-5">
+                <div class="row justify-content-sm-around">
+                    <!--TODO: Not necessary, but use this area for information 
+                              about the robot before the match begins, like if it is a 
+                            no show.
+                    -->
+                                <div class="form-check">
+                                                
+                                    <input class="form-check-input data" type="checkbox" id = "no-show">
+
+                                    <label class="form-check-label" for="no-show">
+                                        No Show
+                                    </label>
+
+                                </div>
+                                <div class="form-check">
+                                    
+                                    <input class="form-check-input data" type="checkbox" id = "dead-robot">
+
+                                    <label class="form-check-label" for="dead-robot">
+                                        Dead Robot 
+                                    </label>
+
+                                </div>
+
+
+                </div>
+            </div>
+
+            <div class="mt-5"  style="background-color: lightgreen">
+                <h1 class="text-center" style="font-size:50px;">Autonomous</h1>
+                <!--TODO: Insert Scout Inputs for Autonomous here-->
+                <div class="row justify-content-sm-around">
+                    <div class="form-check">
+                                        
+                        <input class="form-check-input data" type="checkbox" id = "dead-robot">
+
+                        <label class="form-check-label" for="leave-community">
+                            Left Community
+                        </label>
+
+                    </div>
+
+                    <div class="form-check">
+                                        
+                        <input class="form-check-input data" type="checkbox" id = "docked">
+
+                        <label class="form-check-label" for="docked">
+                            Docked
+                        </label>
+
+                    </div>
+
+                    <div class="form-check">
+                                        
+                        <input class="form-check-input data" type="checkbox" id = "engaged">
+
+                        <label class="form-check-label" for="engaged">
+                            Engaged
+                        </label>
+
+                    </div>
+
+                </div>
+                <p></p>
+                            <h1 class="text-center" style ="font-size:x-large"> Top</h1>
+                    <div class="d-flex justify-content-center">
+                        <div class="input-group mt-3 w-50">
+                        
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-cubeA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                           <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                    
+                            <div id="top-cone" class="form-control data" style="color:white">
+                                0
+                            </div>
+                        -->
+                        <div class="bg-image" style="max-width: 22rem;">
+                            <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                            <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                              <p id="top-cubeA" syle="color:black" class="data">0</p>
+                            </div>
+                          </div>
+                          
+                            <div class="input-group-append">
+                                <button for="top-cubeA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+                            
+                            <img src="images/border.png" style="height: 100x; width: 222px;" />
+                            
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-coneA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                            <!--
+                            <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                
+                            </div>
+-->
+                            <div class="bg-image" style="max-width: 22rem;">
+                                <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                <p id="top-coneA" syle="color:black" class="data">0</p>
+                                </div>
+                            </div>
+
+                            <div class="input-group-append">
+                                <button for="top-coneA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Middle</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-cubeA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="middle-cubeA" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="middle-cubeA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-coneA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="middle-coneA" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="middle-coneA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+        
+                                </div>
+                            </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Bottom</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-cubeA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="bottom-cubeA" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="bottom-cubeA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-coneA" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="bottom-coneA" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="bottom-coneA" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+
+                                    <img src="images/border.png" style="height: 50px; width: 100px;" />
+        
+                                </div>
+                            </div>
+
+                    <p>     </p>
+
+            </div>
+
+
+            <div class="mt-5" style="background-color: rgb(108, 160, 255)">
+                <h1 class="text-center" style="font-size:50px;">Teleop</h1>
+                <!--TODO: Insert Scout Inputs for Teleop here-->
+                <p></p>
+                            <h1 class="text-center" style ="font-size:x-large"> Top</h1>
+                    <div class="d-flex justify-content-center">
+                        <div class="input-group mt-3 w-50">
+                        
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-cubeT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                           <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                    
+                            <div id="top-cone" class="form-control data" style="color:white">
+                                0
+                            </div>
+                        -->
+                        <div class="bg-image" style="max-width: 22rem;">
+                            <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                            <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                              <p id="top-cubeT" syle="color:black" class="data">0</p>
+                            </div>
+                          </div>
+                          
+                            <div class="input-group-append">
+                                <button for="top-cubeT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+                            
+                            <img src="images/border.png" style="height: 100x; width: 222px;" />
+                            
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-coneT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                            <!--
+                            <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                
+                            </div>
+-->
+                            <div class="bg-image" style="max-width: 22rem;">
+                                <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                <p id="top-coneT" syle="color:black" class="data">0</p>
+                                </div>
+                            </div>
+
+                            <div class="input-group-append">
+                                <button for="top-coneT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Middle</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-cubeT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="middle-cubeT" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="middle-cubeT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-coneT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="middle-coneT" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="middle-coneT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+        
+                                </div>
+                            </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Bottom</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-cubeT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="bottom-cubeT" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="bottom-cubeT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-coneT" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="bottom-coneT" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="bottom-coneT" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+
+                                    <img src="images/border.png" style="height: 50px; width: 100px;" />
+        
+                                </div>
+                            </div>
+
+                    <p>     </p>
+
+
+            </div>
+
+
+            <div class="mt-5" style="background-color: lightcoral">
+                <h3 class="text-center" style="font-size:50px;">Endgame</h3>
+                <!--TODO: Insert Scout Inputs for Endgame here-->
+                            <p></p>
+                            <h1 class="text-center" style ="font-size:x-large"> Top</h1>
+                    <div class="d-flex justify-content-center">
+                        <div class="input-group mt-3 w-50">
+                        
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-cubeE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                           <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                    
+                            <div id="top-cone" class="form-control data" style="color:white">
+                                0
+                            </div>
+                        -->
+                        <div class="bg-image" style="max-width: 22rem;">
+                            <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                            <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                              <p id="top-cubeE" syle="color:black" class="data">0</p>
+                            </div>
+                          </div>
+                          
+                            <div class="input-group-append">
+                                <button for="top-cubeE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+                            
+                            <img src="images/border.png" style="height: 100x; width: 222px;" />
+                            
+                            
+                            <div class="input-group-prepend">
+                                <button for="top-coneE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                            </div>
+                            <!--
+                            <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                
+                            </div>
+-->
+                            <div class="bg-image" style="max-width: 22rem;">
+                                <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                <p id="top-coneE" syle="color:black" class="data">0</p>
+                                </div>
+                            </div>
+
+                            <div class="input-group-append">
+                                <button for="top-coneE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Middle</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-cubeE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="middle-cubeE" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="middle-cubeE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="middle-coneE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="middle-coneE" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="middle-coneE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+        
+                                </div>
+                            </div>
+
+                    <p></p>
+                            <h1 class="text-center" style ="font-size:x-large">Bottom</h1>
+                            <div class="d-flex justify-content-center">
+                                <div class="input-group mt-3 w-50">
+                                
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-cubeE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                   <!-- <img src="images/cube.png" alt="Cube" width="50px" height="50px"/>
+                            
+                                    <div id="top-cone" class="form-control data" style="color:white">
+                                        0
+                                    </div>
+                                -->
+                                <div class="bg-image" style="max-width: 22rem;">
+                                    <img src="images/cube.png" style="height: 100px; width: 100px;" />
+                                    <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                      <p id="bottom-cubeE" syle="color:black" class="data">0</p>
+                                    </div>
+                                  </div>
+                                  
+                                    <div class="input-group-append">
+                                        <button for="bottom-cubeE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+                                    
+                                    <img src="images/border.png" style="height: 100x; width: 222px;" />
+                                    
+                                    
+                                    <div class="input-group-prepend">
+                                        <button for="bottom-coneE" class="btn btn-outline-secondary change-btn decrement" style="background-color: white;" type="button">-</button>
+                                    </div>
+                                    <!--
+                                    <div id="top-cube" class="form-control data" style="background-color:rgb(254, 206, 61); color:white">
+                                        
+                                    </div>
+        -->
+                                    <div class="bg-image" style="max-width: 22rem;">
+                                        <img src="images/cone.png" style="height: 100px; width: 100px;" />
+                                        <div class="mask text-light d-flex justify-content-center flex-column text-center" style="background-color: rgba(0, 0, 0, 0)">
+                                        <p id="bottom-coneE" syle="color:black" class="data">0</p>
+                                        </div>
+                                    </div>
+        
+                                    <div class="input-group-append">
+                                        <button for="bottom-coneE" class="btn btn-outline-secondary change-btn increment" style="background-color: white;" type="button">+</button>
+                                    </div>
+        
+                                    <img src="images/border.png" style="height: 50px; width: 100px;" />
+
+                                </div>
+                            </div>
+
+                    <p>     </p>
+
+            </div>
+            <div class="mt-5">
+                
+                <h1 class="text-center" style="font-size:50px;">Performance</h1>
+        <div class="row justify-content-sm-around">
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "good-driver">
+
+                    <label class="form-check-label" for="good-driver">
+                    Good Driver
+                    </label>
+
+                </div>
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "good-teamwork">
+
+                    <label class="form-check-label" for="good-teamwork">
+                    Good Teamwork
+                    </label>
+
+                </div>
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "got-penalties">
+
+                    <label class="form-check-label" for="got-penalties">
+                    Got Penalties
+                    </label>
+
+                </div>
+
+        </div>
+
+        <img src="images/border.png" style="height: 100x; width: 222px;" />
+
+        <div class="row justify-content-sm-around">
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "play-defense">
+
+                    <label class="form-check-label" for="play-defense">
+                    Defense
+                    </label>
+
+                </div>
+
+
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "delivery-bot">
+
+                    <label class="form-check-label" for="delivery-bot">
+                    Delivery Bot
+                    </label>
+
+                </div>
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "upgrade-bot">
+
+                    <label class="form-check-label" for="upgrade-bot">
+                    Upgrade Bot
+                    </label>
+
+                </div>
+
+                <div class="form-check">
+                                                
+                    <input class="form-check-input data" type="checkbox" id = "pick-up-sideways-cone">
+
+                    <label class="form-check-label" for="pick-up-sideways-cone">
+                    Sideways Cone
+                    </label>
+
+                </div>
+
+            </div>
+    </div>
+
+    <img src="images/border.png" style="height: 100x; width: 222px;" />
+
+            <!--No need to change the save button-->
+            <div class="mt-3 ml-3 float-right">
+                
+                <img src="images/border.png" style="height: 100x; width: 222px;" />
+
+                <div data-toggle="modal" data-target="#save-modal" class="btn btn-success btn-lg">Save</div>
+            </div>
+
+        </div>
+        <div style="height:15em">
+        </div>
+    </div>
+
+    
+
+    <!--No need to change the save modal-->
+    <!-- Save Modal -->
+    <div class="modal fade" id="save-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to submit? <b>You <u>can not</u> edit your data after submitting.</b>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+                    <button class="btn btn-primary" data-dismiss="modal" id="submit-btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="/__/firebase/7.8.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="/__/firebase/7.14.5/firebase-auth.js"></script>
+    <script src="/__/firebase/7.8.2/firebase-analytics.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script src="/__/firebase/init.js"></script>
+
+    <!-- Set Up Program Files-->
+    <script src="js/main.js"></script>
+    <script src="js/userServer.js"></script>
+    <script src="js/authentication.js"></script>
+</body>
