@@ -83,6 +83,20 @@ document.addEventListener("DOMContentLoaded", event => {
         setUpTable(paths);
         $("#table-card").show();
     })
+
+    /**
+     * When clicked, all checkboxes will be selected
+     */
+    $("#select-all").on("click", () => {
+        $(".data").prop("checked", true);
+    })
+
+    /**
+     * When clicked, all checkboxes will be unselected
+     */
+    $("#unselect-all").on("click", () => {
+        $(".data").prop("checked", false);
+    })
 })
 
 /**

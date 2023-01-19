@@ -1,111 +1,11 @@
 var methods = {};
 
 /**
- * Returns an empty match data storage object
- * 
- * @return an empty match data storage object
- */
-methods.getEmptyMatchData = function(){
-    /*
-      TODO: Insert each task for each gameperiod of the game here. 
- 
-             You can insert as many tasks as necessary. 
-             Try to keep tasks one word, if more than one word has to be 
-             used to describe a task, seperate each word with an underscore.
-             For example, for wanting to record if a team didn't show up, you would 
-             use "no_show"
- 
-             Set each task's value to 0. 
-             
-             DO NOT remove any of the "score" attributes or the "totalScore."
- 
-             Example:
-                 gamePlay: {
-                         auto: {
-                             "line" : 0, 
-                             "score": 0,
-                             ...
-                         },
-                         teleop: {
-                             "jumps": 0,
-                             "score": 0,
-                             ...
-                         },
-                         ...
-                     }
-             
-             Notes: 
-                     If another gameperiod is necessary to be added, that is fine
-                     but remember to add it to getDataPointValues() as well. Adding a 
-                     "score" attribute to the new gameperiod is not needed.
- 
-                     If after an event you decide to add more tasks or remove some,
-                     that should work compeletly fine for your next event, but may cause
-                     issues trying to view data from previous events. 
- 
-                     The tasks placed here must also be used for IDs in index.html. 
-                     More info is explained there
- 
-     */
-    return {
-        match: "",
-        team: "",
-        gamePlay: {
-            auto: {
-                "leave_community": 0,
-                "docked": 0,
-                "engaged": 0,
-                // Resource Scoring During Auto
-                "top_coneA": 0,
-                "top_cubeA": 0,
-                "middle_coneA": 0,
-                "middle_cubeA": 0,
-                "bottom_coneA": 0,
-                "bottom_cubeA": 0,
-            },
-            teleop: {
-                // Insert tasks for Teleop here.
-                "top_coneT": 0,
-                "top_cubeT": 0,
-                "middle_coneT": 0,
-                "middle_cubeT": 0,
-                "bottom_coneT": 0,
-                "bottom_cubeT": 0,
-            },
-            end: {
-                // Insert tasks for Endgame here.
-                "top_coneE": 0,
-                "top_cubeE": 0,
-                "middle_coneE": 0,
-                "middle_cubeE": 0,
-                "bottom_coneE": 0,
-                "bottom_cubeE": 0,
-
-                "parked": 0,
-                "docked": 0,
-                "engaged": 0,
-            },
-            performance: {
-                "good_driver": 0,
-                "good_teamwork": 0,
-                "got_penalties": 0,
-                "played_defense": 0,
-                "delivery_bot": 0,
-                "upgrade_bot": 0,
-                "pick_up_sideways_cone": 0,
-                "dead_robot": 0,
-            },
-            totalScore: 0
-        }
-    }
-}
-
-/**
  * Returns an object containing the point values for each task being scouted
  * 
  * @return an object containing the point values for each task being scouted
  */
-methods.getDataPointValues = function() {
+methods.getDataPointValues = function () {
     /*
       TODO: Insert the point value for each task for each gameperiod of the game here.
 
@@ -150,7 +50,7 @@ methods.getDataPointValues = function() {
             "bottom_cube": 3,
         },
         teleop: {
-            // Insert tasks for Teleop here.
+            // Resource Scoring During Tele-op
             "top_cone": 5,
             "top_cube": 5,
             "middle_cone": 3,
@@ -159,7 +59,7 @@ methods.getDataPointValues = function() {
             "bottom_cube": 2,
         },
         end: {
-            // Insert tasks for Endgame here.
+            // Resource Scoring During Endgame
             "top_cone": 5,
             "top_cube": 5,
             "middle_cone": 3,
@@ -180,17 +80,42 @@ methods.getDataPointValues = function() {
             "upgrade_bot": 0,
             "pick_up_sideways_cone": 0,
             "dead_robot": 0,
-            "no-show" : 0,
+            "no_show": 0,
         },
     }
 }
+
+
+/**
+ * Returns an empty match data storage object
+ * 
+ * @return an empty match data storage object
+ */
+methods.getEmptyMatchData = function () {
+    var gamePlay = methods.getDataPointValues();
+    for (var gamePeriod in gamePlay) {
+        for (var scoring in gamePlay[gamePeriod]) {
+            gamePlay[gamePeriod][scoring] = 0;
+        }
+        gamePlay[gamePeriod]["score"] = 0;
+    }
+    gamePlay["totalScore"] = 0
+
+    return {
+        match: "",
+        team: "",
+        gamePlay: gamePlay,
+        timestamps: []
+    }
+}
+
 
 /**
  * Returns an object containing each task which only one team can accomplish per match
  * 
  * @return an object containing each task which only one team can accomplish per match
  */
-methods.getDependentData = function() {
+methods.getDependentData = function () {
     /*
         TODO: Insert each dependent task and its corresponding gameperiod here. 
 
@@ -226,11 +151,11 @@ methods.getDependentData = function() {
                 },
                 ...
          */
-        "auto": 
-        {
-            "dock" : 8,
-            "engaged" : 12,
-        }
+                "auto": 
+                {
+                    "dock" : 8,
+                    "engaged" : 12,
+                }
     }
 }
 

@@ -95,30 +95,33 @@ using for keeping track of the jumps in teleop has to be "**teleop-jumps**".
         
 ## Main.js
 
-### Inside `getInputtedData()`:
+### Inside `getValue()`:
 
-If you have added an input to index.html that is not a check box or just a numerical value, like those in the incrementation/decrementation boxes, then add an else if statement that checks to see if the current object is one of the ones you've added, and then add a line setting `temp[ path[i] ]` equal to the input
+If you have added an input to index.html that is not a check box or just a numerical value, like those in the incrementation/decrementation boxes, then add an else if statement that checks to see if the current object is one of the ones you've added, and then return the input value.
+
+You might also have to add code that triggers the recordTimestamp() method
+when your new input gets updated if none of the existing triggers do so already. 
                     
 For example, if you added sliders for the user to use, make sure they all have a common class such as "`form-slider`", and then you can add an else if stament as such: 
 
 **The Current Code:**
 
-	if ($(this).hasClass("form-check-input"))  // Records check box data
-       temp[path[i]] = $(this).is(':checked') ? 1 : 0;
+	if (dataEntry.hasClass("form-check-input"))  // Records check box data
+       temp[path[i]] = dataEntry.is(':checked') ? 1 : 0;
 
 	else
-       temp[path[i]] = parseInt($(this).text().trim()); // Records numerical data
+       temp[path[i]] = parseInt(dataEntry.text().trim()); // Records numerical data
   
 **The New Code (For the above example):**
 
-	if ($(this).hasClass("form-check-input"))  // Records check box data
-		temp[path[i]] = $(this).is(':checked') ? 1 : 0;
+	if (dataEntry.hasClass("form-check-input"))  // Records check box data
+		temp[path[i]] = dataEntry.is(':checked') ? 1 : 0;
 
-	else if( $(this).hasClass("form-slider") )
-		temp[path[i]] = $(this).val(); // Or however the value is retrieved
+	else if( dataEntry.hasClass("form-slider") )
+		temp[path[i]] = dataEntry.val(); // Or however the value is retrieved
 
 	else
-		temp[path[i]] = parseInt($(this).text().trim()); // Records numerical data
+		temp[path[i]] = parseInt(dataEntry.text().trim()); // Records numerical data
 
 ### Inside `reset()`:
 

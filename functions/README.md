@@ -2,7 +2,6 @@
 
 The following functions within **data.js** are required to be adjusted for the server side of the app, no other files or functions have to be edited.
 
-* `getEmptyMatchData()`
 * `getDataPointValues()`
 * `getDependentData()`
 
@@ -21,49 +20,15 @@ Go to the Blue Alliance Account page, https://www.thebluealliance.com/account. C
 	
 For more info on firebase environmental variables, go here: https://firebase.google.com/docs/functions/config-env
 
-## GetEmptyMatchData()
-
-Insert each task for each gameperiod of the game here. 
-
-You can insert as many tasks as necessary. Try to keep tasks one word, if more than one word has to be used to describe a task, seperate each word with an underscore. For example, for wanting to record if a team didn't show up, you would use "no_show"
-
-Set each task's value to 0. 
-
-**DO NOT** remove any of the "`score`" attributes or the "`totalScore`."
-            
-Example:
-	
-	gamePlay: {
-	        auto: {
-	            "line" : 0, 
-	            ...
-	        },
-	        teleop: {
-	            "jumps": 0,
-	            ...
-	        },
-			performace: {
-				"defense": 0,
-				"no_show": 0,
-				...
-			},
-	        ...
-	    }
-                    
-            
-Notes: 
-   
-If another gameperiod is necessary to be added, that is fine but remember to add it to `getDataPointValues()` as well.  Adding a "`score`" attribute to the new gameperiod is not needed.
-
-If after an event you decide to add more tasks or remove some, that should work compeletly fine for your next event, but may cause issues trying to view data from previous events. 
-
-The tasks placed here must also be used for IDs in index.html. More info is explained there
 
 ## GetDataPointValues()
 
-Insert the point value for each task for each gameperiod of the game here.
+Insert each task and the corresponding point value for each gameperiod of the game here. 
 
-All gameperiods and tasks **MUST be identical** to those written for the content of "gameplay" inside the `getEmptyMatchData()` method, but **DO NOT INCLUDE** the "`score`" attributes or "`totalScore`"
+You can insert as many tasks as necessary. Try to keep tasks one word, if more than one word has to be used to describe a task, seperate each word with an underscore. For example, for wanting to record if a team didn't show up, you would use "no_show". **KEEP TASKS LOWERCASE**
+
+
+ **DO NOT INCLUDE** "`score`" attributes or "`totalScore`"
 
 Insert the corresponding point value for each task as described in the game manual. You may want to record tasks that don't actually give a team points, just set the value for these to 0. For example, the content inside the "performance" map is likely all zeros, data such as "defense" or "no_show".
 
@@ -86,6 +51,14 @@ Example (Made up point values):
 	    ...
 	}
 	
+Notes: 
+   
+If another gameperiod is necessary to be added, that is fine.  Adding a "`score`" attribute to the new gameperiod is not needed.
+
+If after an event you decide to add more tasks or remove some, that should work compeletly fine for your next event, but may cause issues trying to view data from previous events. 
+
+The tasks placed here must also be used for IDs in index.html. More info is explained there
+
 ## getDependentData()
 
 Insert each dependent task and its corresponding gameperiod here. 

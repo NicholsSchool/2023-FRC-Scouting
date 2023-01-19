@@ -1,4 +1,5 @@
 var charts = {};
+var csvs = {};
 
 document.addEventListener("DOMContentLoaded", event => {
     $("#charts").hide();
@@ -14,23 +15,41 @@ document.addEventListener("DOMContentLoaded", event => {
         clearCharts();
         setUpTeamDataCharts(selectedTeam, createChart);
     })
-    /**
-     * On click, sets another team's dataset on each chart
-     */
-    $("#second-team-select-btn").on("click", () => {
-        var selectedTeam = $("#team-select-2 option:selected").text();
-        if (isNaN(Number(selectedTeam))) // If default option slected, don't do anything
-            return;
 
-        //if chart is empty, don't make second chart
-        if (Object.entries(charts).length === 0)
-            $("#second-team-select-error").show();
-        else {
-            $("#second-team-select-error").hide();
-            setUpTeamDataCharts(selectedTeam, addSecondDataset);
-        }
-    })
 })
+
+/**
+ * Generates a CSV string form the timestamps and stores it in the csvs map
+ * 
+ * @param {*} timestamps - the timestamps to convert to csv
+ * @param {*} id - the match number
+ */
+function createTimestampCSV(timestamps, id) {
+    var rows = [["Action", "Num Occurences", "Total Score", "Time (Seconds)"]]
+    for (stamp of timestamps) {
+        rows.push([stamp['path'].join('-'), stamp['value'], stamp['totalScore'], stamp['time']])
+    }
+    let csvContent = "data:text/csv;charset=utf-8,"
+        + rows.map(e => e.join(",")).join("\n");
+    csvs[id] = csvContent;
+}
+
+/**
+ * Downloads the match's corresponding csv file. The file will be named
+ * team_matchId.csv
+ * 
+ * @param {*} team - the team number
+ * @param {*} matchId - the match number
+ */
+function downloadTimestampCSV(team, matchId) {
+    var encodedUri = encodeURI(csvs[matchId]);
+    window.open(encodedUri);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", team + "_" + matchId + ".csv");
+    document.body.appendChild(link); // Required for FF
+    link.click(); // This will download the data file named "my_data.csv".
+}
 
 /**
  * Sets up the team options and possibly a certain team's info if in the url
@@ -53,39 +72,44 @@ function setUp() {
             var team = url.substring(url.indexOf("=") + 1, url.length);
             $("#team-select-1").val(team);
             clearCharts();
-            setUpTeamDataCharts(team, createChart);
+            setUpTeamDataCharts(team);
         })
 }
 
 /**
  * Sets each chart to display the data of the given team
  * @param {*} team - the team whose data to show 
- * @param {*} typeOfChart - the function for set up
  */
-function setUpTeamDataCharts(team, typeOfChart) {
+function setUpTeamDataCharts(team) {
     getTeamData(team)
         .then(teamData => {
             var teamMatchData = teamData["matches"]
-            // Go through each canvas to set the chart on it
-            $("canvas").each(function () {
-                var path = $(this).attr('id').split("-"); // Each canvas has the data storage path for its task
-                var data = [];
-                var labels = [];
-                var num = 1;
+            for (matchId in teamMatchData) {
+                var chart = `
+        <div class="col-md-5 mt-3">
+            <div class="card text-center ">
+              <div class="card-header">
+                Match ${matchId}
+              </div>
+              <div class="card-body">
+                 <canvas width="100%" height="100%" id=${matchId}></canvas>
+                 <div class="btn btn-success mt-4" onClick=downloadTimestampCSV('${team}','${matchId}')>Download CSV</div>
+              </div>
+            </div>
+          </div > 
+          `
+                $('#charts').append(chart)
 
-                // Sorts through each match of the team in sequential order
-                var matchesPlayedByTeam = Object.keys(teamMatchData).sort();
-                for (index of matchesPlayedByTeam) {
-                    labels.push("" + num++);
-                    var temp = teamMatchData[index];
-                    for (var i = 0; i < path.length; i++)
-                        temp = temp[path[i]];
-                    data.push(temp)
+                var timestamps = teamMatchData[matchId]['timestamps']
+                createTimestampCSV(timestamps, matchId)
+
+                var data = []
+                for (stamp of timestamps) {
+                    data.push({ x: stamp['time'], y: stamp['totalScore'], label: stamp['path'].join('-') })
                 }
+                createChart($('#' + matchId), data, matchId)
+            }
 
-                //Sets up the chart using the inputted function
-                typeOfChart($(this), data, $(this).attr('id'), labels, team);
-            })
             $("#charts").show();
         })
 }
@@ -94,63 +118,95 @@ function setUpTeamDataCharts(team, typeOfChart) {
  * @param {*} ctx - the canvas element to place chart
  * @param {*} data - the data for the chart
  * @param {*} id - the data storage path
- * @param {*} labels - the labels for the chart
- * @param {*} teamNum - the team's number
  */
-function createChart(ctx, data, id, labels, teamNum) {
+function createChart(ctx, data, id) {
+    const maxTime = 160
+    const stepSize = 10
+    const autoEndTime = 15
+    const teleopEndTime = 120
+    const endGameEndTime = maxTime
+
+    // Custom plugin to create background colors for different game periods
+    // in the graph
+    const plugin = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+
+            var { ctx } = chart;
+            var chartArea = chart.chartArea;
+
+            var width = chartArea.right - chartArea.left;
+            var height = chartArea.bottom - chartArea.top
+
+            var columnCount = maxTime / stepSize;
+            var columnWidth = width / columnCount;
+
+
+            ctx.save();
+
+            // Color in Auto
+            ctx.fillStyle = options.autoColor;
+            var startPoint = chartArea.left
+            ctx.fillRect(startPoint, chartArea.top, columnWidth * (autoEndTime / stepSize), height);
+
+            // Color in Teleop
+            ctx.fillStyle = options.teleopColor;
+            startPoint += columnWidth * (autoEndTime / stepSize)
+            ctx.fillRect(startPoint, chartArea.top, columnWidth * (teleopEndTime / stepSize), height);
+
+            // Color in End game
+            ctx.fillStyle = options.endColor;
+            startPoint += columnWidth * (teleopEndTime / stepSize)
+            ctx.fillRect(startPoint, chartArea.top, columnWidth * (endGameEndTime / stepSize), height);
+
+
+            ctx.restore();
+        }
+    };
     var myChart = new Chart(ctx, {
-        type: 'line',
+        type: 'scatter',
         data: {
-            labels: labels,
             datasets: [{
-                label: teamNum,
+                label: "Total Score",
                 data: data,
                 borderColor: [
                     'rgb(86, 229, 86)',
-                ],
-                fill: false
+                ]
             }]
         },
         options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
+            plugins: {
+                customCanvasBackgroundColor: {
+                    autoColor: '#5c7d3d',
+                    teleopColor: '#03befc',
+                    endColor: '#ff8578'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            return context.raw.label;
+                        }
                     }
-                }],
-            }
-        }
+                }
+            },
+            scales: {
+                x: {
+                    max: maxTime,
+                    min: 0,
+                    ticks: {
+                        stepSize: stepSize
+                    }
+                }
+            },
+            showLine: true,
+
+            borderWidth: 4,
+            pointRadius: 5
+        },
+        plugins: [plugin]
+
     });
     charts[id] = myChart;
-}
-
-/**
- * Adds a second team's data set to show on the charts
- * @param {*} ctx - the canvas element to place chart
- * @param {*} data - the data for the chart
- * @param {*} id - the data storage path
- * @param {*} labels - the labels for the chart
- * @param {*} teamNum - the team's number
- */
-function addSecondDataset(ctx, data, id, labels, teamNum) {
-    var dataset = {
-        label: teamNum,
-        data: data,
-        borderColor: [
-            'rgb(204, 0, 153)',
-        ],
-        fill: false
-    }
-
-    if (charts[id].data.datasets.length == 1)// If there is only one dataset, add this one
-        charts[id].data.datasets.push(dataset)
-    else //if there is more than 1 dataset, set it to this one 
-        charts[id].data.datasets[1] = dataset
-
-    // If this second team has played more matches, use its labels
-    if (labels.length > charts[id].data.labels.length)
-        charts[id].data.labels = labels;
-    charts[id].update();
 }
 
 /**
@@ -160,4 +216,6 @@ function clearCharts() {
     for (id in charts)
         charts[id].destroy();
     charts = {};
+    $("#charts").empty()
+    csvs = {}
 }

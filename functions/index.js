@@ -56,6 +56,7 @@ app.post("/saveData", (req, res) => {
                             return
                         }
                         var gamePlay = convertToProperData(data.gamePlay);
+                        gamePlay['timestamps'] = getInfoFromTimestamps(data.timestamps)
                         teamData.matches[data.match] = gamePlay;
                         var newAverages = updateAverages(teamData.averages, gamePlay, Object.keys(teamData.matches).length);
                         transaction.update(teamRef, { matches: teamData.matches, averages: newAverages });
@@ -70,6 +71,40 @@ app.post("/saveData", (req, res) => {
             res.status(400).send("Error saving data");
         })
 })
+
+
+/**
+ * Goes through all timestamps and adds the totalscore at each stamp. Returns
+ * the updated list
+ * @param {*} timestamps - a list of timestamps for every action the robot did
+ * @returns The same list of timestamps but with each stamp now knowing the total
+ * score at that time
+ */
+function getInfoFromTimestamps(timestamps) {
+    var pointValues = gameData.getDataPointValues()
+    var pointTracker = gameData.getEmptyMatchData().gamePlay
+    for (var stamp of timestamps) {
+        var path = stamp['path']
+        var currentVal = pointTracker
+        var pointsDiff = pointValues
+        for (id of path) {
+            currentVal = currentVal[id]
+            pointsDiff = pointsDiff[id]
+        }
+        var change = stamp['value'] - currentVal
+        pointTracker.totalScore += change * pointsDiff
+        stamp['totalScore'] = pointTracker.totalScore
+
+        var temp = pointTracker;
+        var i = 0;
+        for (; i < path.length - 1; i++) {
+            temp = temp[path[i]]
+        }
+        temp[path[i]] = stamp['value']
+    }
+    return timestamps
+
+}
 
 
 /**
